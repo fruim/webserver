@@ -704,7 +704,7 @@ io.on('connection', (socket) => {
                     
                 // Insert the new user into the database
                 const insertQuery = 'INSERT INTO `user`(`type`, `fname`, `mname`, `lname`, `affiliation`, `email`, `username`, `password_hash`, `salt`, `facility`, `accstatus`,`admin_id`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)';
-                const userCreated = await db.execute(insertQuery, ['user', fname, mname, lname, affiliation, email, email, hashedPassword, generatedSalt, facility, 0, `adminid`]);
+                const userCreated = await db.execute(insertQuery, ['user', fname, mname, lname, affiliation, email, email, hashedPassword, generatedSalt, facility, 0, adminid]);
 
                 // Successful account creation
                 if (userCreated) {
