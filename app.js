@@ -659,8 +659,68 @@ io.on('connection', (socket) => {
             socket.emit('retrieveUserData', { error: 'Failed to update facility' });
         }
     });
+
+    socket.on('checkEmail', async (data) => {
+        const { email } = data;
     
-    //Account Creation
+        try {
+            // Update user's facility
+            const [results] = await db.execute('SELECT * WHERE `email`= ?', [email]);
+            if (results.length > 0){
+             console.log('User Already Existed!'); 
+                socket.emit('emailResponse', 1);  
+            }
+            else{
+                console.log('User dont Exist!');
+                socket.emit('emailResponse', 0);   
+            }
+        } catch (error) {
+            console.error('MySQL query error:', error);
+            socket.emit('Email check Error:', { error: 'Failed to update facility' });
+        }
+    });
+
+    //User Account Creation
+    socket.on('createUserAccount', async (data) => {
+        const { fname, mname, lname, email, facility, affiliation, password, adminid} = data;
+
+        function hashPassword(password, salt) {
+            const hmac = crypto.createHmac('sha256', salt);
+            const hashedPassword = hmac.update(password).digest('hex');
+            return hashedPassword;
+        }
+
+        function generateSalt() {
+            return crypto.randomBytes(16).toString('base64');
+        }
+
+        try {
+            // Check if the email already exists
+                
+             
+                // Generate salt and hash password
+                const generatedSalt = generateSalt();
+                const hashedPassword = hashPassword(password, generatedSalt);
+                    
+                // Insert the new user into the database
+                const insertQuery = 'INSERT INTO `user`(`type`, `fname`, `mname`, `lname`, `affiliation`, `email`, `username`, `password_hash`, `salt`, `facility`, `accstatus`,`admin_id`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)';
+                const userCreated = await db.execute(insertQuery, ['user', fname, mname, lname, affiliation, email, email, hashedPassword, generatedSalt, facility, 0, `adminid`]);
+
+                // Successful account creation
+                if (userCreated) {
+                    socket.emit('accountCreated', { response: 0 });
+                } else {
+                    socket.emit('accountCreated', { response: 1 });
+                }
+        } catch (error) {
+            console.error('MySQL query error:', error);
+            socket.emit('accountCreated', { response: 1 });
+        }
+    });
+
+    
+    
+    //Admin Account Creation
     socket.on('createAccount', async (data) => {
         const { fname, mname, lname, email, facility, affiliation, password } = data;
 
