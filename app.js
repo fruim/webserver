@@ -665,7 +665,7 @@ io.on('connection', (socket) => {
     
         try {
             // Update user's facility
-            const [results] = await db.execute('SELECT * WHERE `email`= ?', [email]);
+            const [results] = await db.execute('SELECT * FROM `user` WHERE `email`= ?', [email]);
             if (results.length > 0){
              console.log('User Already Existed!'); 
                 socket.emit('emailResponse', 1);  
