@@ -27,15 +27,6 @@ const io = socketIo(server, {
 
 app.use(cors());
 
-app.use(
-    expressSession({
-      secret: 'health_i1988!',
-      resave: false,
-      saveUninitialized: true,
-    })
-);
-
-
 const dbConfig = {
     host: 'srv1157.hstgr.io',
     user: 'u629484482_healthi_web',
