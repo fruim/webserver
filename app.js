@@ -684,18 +684,17 @@ io.on('connection', (socket) => {
     socket.on('createUserAccount', async (data) => {
         const { fname, mname, lname, email, facility, affiliation, password, adminid} = data;
 
-        function hashPassword(password, salt) {
-            const hmac = crypto.createHmac('sha256', salt);
-            const hashedPassword = hmac.update(password).digest('hex');
-            return hashedPassword;
-        }
-
-        function generateSalt() {
-            return crypto.randomBytes(16).toString('base64');
-        }
-
         try {
             // Check if the email already exists
+                function hashPassword(password, salt) {
+                    const hmac = crypto.createHmac('sha256', salt);
+                    const hashedPassword = hmac.update(password).digest('hex');
+                    return hashedPassword;
+                }
+        
+                function generateSalt() {
+                    return crypto.randomBytes(16).toString('base64');
+                }
                 
              
                 // Generate salt and hash password
@@ -711,6 +710,14 @@ io.on('connection', (socket) => {
                     socket.emit('accountCreated', { response: 0 });
                 } else {
                     socket.emit('accountCreated', { response: 1 });
+                    console.log('fname:', fname);
+                    console.log('mname:', mname);
+                    console.log('lname:', lname);
+                    console.log('email:', email);
+                    console.log('facility:', facility);
+                    console.log('affiliation:', affiliation);
+                    console.log('password:', password);
+                    console.log('adminid:', adminid);
                 }
         } catch (error) {
             console.error('MySQL query error:', error);
