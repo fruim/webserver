@@ -503,7 +503,7 @@ io.on('connection', (socket) => {
     });
     
 
-    socket.on('UpdateBio', async (data) => {
+    socket.on('updateBio', async (data) => {
         const { uid, newfname, newmname, newlname, newaffiliation } = data;
     
         try {
