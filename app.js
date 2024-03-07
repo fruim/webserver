@@ -562,6 +562,26 @@ io.on('connection', (socket) => {
             socket.emit('retrieveUserData', { error: 'Failed to update last name' });
         }
     });
+
+    socket.on('affiliationUpdate', async (data) => {
+        const { uid, newaffiliation } = data;
+    
+        try {
+            // Update last name
+            await db.execute('UPDATE `user` SET `affiliation` = ? WHERE `id`= ?', [newaffiliation, uid]);
+    
+            console.log('User Affiliation Updated!');
+    
+            // Retrieve updated user details
+            const [updatedUserData] = await db.execute('SELECT `id`, `type`, `fname`, `mname`, `lname`, `affiliation`, `email`, `username`,`facility`, `accstatus`, `image` FROM `user` WHERE `id` = ?', [uid]);
+    
+            console.log('User Details updated!');
+            socket.emit('retrieveUserData', updatedUserData);
+        } catch (error) {
+            console.error('MySQL query error:', error);
+            socket.emit('retrieveUserData', { error: 'Failed to update last name' });
+        }
+    });
     
     socket.on('getaddresses', async (uid) => {
         try {
