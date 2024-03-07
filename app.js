@@ -503,63 +503,21 @@ io.on('connection', (socket) => {
     });
     
 
-    socket.on('fnameUpdate', async (data) => {
-        const { uid, newfname } = data;
+    socket.on('UpdateBio', async (data) => {
+        const { uid, newfname, newmname, newlname, newaffiliation } = data;
     
         try {
             // Update first name
-            await db.execute('UPDATE `user` SET `fname` = ? WHERE `id`= ?', [newfname, uid]);
+            const [response] = await db.execute('UPDATE `user` SET `fname` = ?, `mname` = ?, `lname` = ?, `affiliation` = ? WHERE `id`= ?', [newfname, newmname, newlname, newaffiliation, uid]);
     
-            console.log('Record First Name Updated!');
+            console.log('User Bio Updated!');
 
-            socket.emit('bioUpdated');
+            socket.emit('bioUpdated', response);
         } catch (error) {
             console.error('MySQL query error:', error);
-            socket.emit('retrieveUserData', { error: 'Failed to update first name' });
         }
     });
     
-    socket.on('mnameUpdate', async (data) => {
-        const { uid, newmname } = data;
-    
-        try {
-            // Update middle name
-            await db.execute('UPDATE `user` SET `mname` = ? WHERE `id`= ?', [newmname, uid]);
-    
-            console.log('Record Middle Name Updated!');
-        } catch (error) {
-            console.error('MySQL query error:', error);
-            socket.emit('retrieveUserData', { error: 'Failed to update middle name' });
-        }
-    });
-    
-    socket.on('lnameUpdate', async (data) => {
-        const { uid, newlname } = data;
-    
-        try {
-            // Update last name
-            await db.execute('UPDATE `user` SET `lname` = ? WHERE `id`= ?', [newlname, uid]);
-    
-            console.log('Record Last Name Updated!');
-        } catch (error) {
-            console.error('MySQL query error:', error);
-            socket.emit('retrieveUserData', { error: 'Failed to update last name' });
-        }
-    });
-
-    socket.on('affiliationUpdate', async (data) => {
-        const { uid, newaffiliation } = data;
-    
-        try {
-            // Update last name
-            await db.execute('UPDATE `user` SET `affiliation` = ? WHERE `id`= ?', [newaffiliation, uid]);
-    
-            console.log('User Affiliation Updated!');
-        } catch (error) {
-            console.error('MySQL query error:', error);
-            socket.emit('retrieveUserData', { error: 'Failed to update last name' });
-        }
-    });
     
     socket.on('getaddresses', async (uid) => {
         try {
