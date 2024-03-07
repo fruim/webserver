@@ -386,8 +386,8 @@ io.on('connection', (socket) => {
         }
     });
 
-    socket.on('getLog', async (id) => {
-        
+    socket.on('getLog', async (data) => {
+        const { id } = data
         try {
             const query = 'SELECT * FROM `log` WHERE `admin_id` = ?';
             const [results] = await db.execute(query, [id]);
