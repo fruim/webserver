@@ -388,17 +388,17 @@ io.on('connection', (socket) => {
     
     socket.on('getUserData', async (uid) => {
         try {
-            const query = 'SELECT * FROM `user` WHERE `id` = ?';
+            const query = 'SELECT a.*, COUNT(r.id) AS total_records, COUNT(DISTINCT u.id) AS total_users FROM user a JOIN user u ON a.id = u.admin_id LEFT JOIN records r ON u.id = r.uid WHERE a.id = ? GROUP BY a.id, a.type, u.id, u.type';
             const [results] = await db.execute(query, [uid]);
     
             if (results.length > 0) {
-                const { id, type, fname, mname, lname, affiliation, email, username, facility, accstatus, image } = results[0];
+                const { id, type, fname, mname, lname, affiliation, email, username, facility, accstatus, image, total_records, total_users } = results[0];
                 const imageData = image ? image.toString('base64') : '';
                 
                 console.log('User Data Retrieved!');
                 console.log(results);
     
-                socket.emit('retrieveUserData', { id, type, fname, mname, lname, affiliation, email, username, facility, accstatus, image: imageData });
+                socket.emit('retrieveUserData', { id, type, fname, mname, lname, affiliation, email, username, facility, accstatus, image: imageData, total_records, total_users });
             } else {
                 console.log('User not found');
                 socket.emit('retrieveUserData', { error: 'User not found' });
