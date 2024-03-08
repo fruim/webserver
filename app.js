@@ -741,7 +741,7 @@ io.on('connection', (socket) => {
         const { username, enteredpassword } = data;
     
         try {
-            const query = 'SELECT * FROM `user` WHERE `username` = ? OR `email` = ?';
+            const query = 'SELECT * FROM `user` WHERE `type`= "admin" AND `username` = ? OR `email` = ?';
             const [results] = await db.execute(query, [username, username]);
 
             function hashPassword(password, salt) {
