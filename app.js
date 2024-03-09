@@ -335,10 +335,10 @@ io.on('connection', (socket) => {
     //Realtime Records Data Funtionality
     socket.on('checkNotification', async (data) => {
         try {
-            const { admin_id } = data;
+            const { adminid } = data;
     
             const query = 'SELECT COUNT(*) AS new_status_count FROM log WHERE status = "new" AND admin_id = ?';
-            const [response] = await db.execute(query, [admin_id]);
+            const [response] = await db.execute(query, [adminid]);
     
             if (response.length > 0) {
                 const count = response[0].new_status_count; // Use consistent notation
