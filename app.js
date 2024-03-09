@@ -292,6 +292,31 @@ io.on('connection', (socket) => {
             console.error('MySQL query error:', error);
         }
     });
+
+    socket.on('notificationRead', async (data) => {
+        const { admin_id } = data;
+    
+        try {
+            const query = 'UPDATE `log` SET `status` = "old" WHERE `admin_id` = ?';
+            await db.execute(query, [admin_id]);
+    
+            console.log('Log Read');
+        } catch (error) {
+            console.error('MySQL query error:', error);
+        }
+    });
+
+    socket.on('clearNotification', async (data) => {
+        const { admin_id } = data;
+        try {
+            const query = 'DELETE FROM `records` WHERE `admin_id` = ?';
+            await db.execute(query, [admin_id]);
+    
+            console.log('Notifications Cleared Successfully');
+        } catch (error) {
+            console.error('MySQL query error:', error);
+        }
+    });
     
     socket.on('changeFirstName', async (data) => {
         const { recordId, newName } = data;
