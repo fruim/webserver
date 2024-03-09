@@ -416,8 +416,7 @@ io.on('connection', (socket) => {
         try {
             const query = 'SELECT * FROM `log` WHERE `admin_id` = ?';
             const [results] = await db.execute(query, [id]);
-    
-            console.log('Logs Retrive Successfully');
+
             socket.emit('retrievelog', results);
         } catch (error) {
             console.error('MySQL query error:', error);
