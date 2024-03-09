@@ -337,14 +337,20 @@ io.on('connection', (socket) => {
         const { admin_id } = data;
     
         try {
-            const query = 'SELECT COUNT(*) AS new_status_count FROM log WHERE status = "new" AND `admin_id` = ?';
+            const query = 'SELECT COUNT(*) AS new_status_count FROM log WHERE status = "new" AND admin_id = ?';
             const [response] = await db.execute(query, [admin_id]);
-            
-            socket.emit('checkNotificationResponse', response);
+    
+            if (response && response.length > 0) {
+                const newStatusCount = response[0].new_status_count;
+                socket.emit('checkNotificationResponse', newStatusCount);
+            } else {
+                console.error('No response from the database query.');
+            }
         } catch (error) {
-            console.error('MySQL query error:', error);
+            console.error('Error executing MySQL query:', error);
         }
     });
+
     
     socket.on('changeMiddleName', async (data) => {
         const { recordId, newName } = data;
