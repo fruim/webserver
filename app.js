@@ -272,10 +272,9 @@ io.on('connection', (socket) => {
             await db.execute(query, [recordId]);
     
             console.log('Record deleted successfully');
-            socket.emit('recordDeleted');
+            socket.emit('recordsUpdated');
         } catch (error) {
             console.error('MySQL query error:', error);
-            socket.emit('recordDeleted', { error: 'Failed to delete record' });
         }
     });
     
