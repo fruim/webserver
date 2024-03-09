@@ -294,11 +294,11 @@ io.on('connection', (socket) => {
     });
 
     socket.on('notificationRead', async (data) => {
-        const { admin_id } = data;
+        const { id } = data;
     
         try {
-            const query = 'UPDATE `log` SET `status` = "old" WHERE `admin_id` = ?';
-            await db.execute(query, [admin_id]);
+            const query = 'UPDATE `log` SET `status` = "old" WHERE `id` = ?';
+            await db.execute(query, [id]);
     
             console.log('Log Read');
         } catch (error) {
