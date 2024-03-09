@@ -331,6 +331,20 @@ io.on('connection', (socket) => {
             socket.emit('recordsUpdated', { error: 'Failed to update first name' });
         }
     });
+
+    //Realtime Records Data Funtionality
+    socket.on('checkNotification', async (data) => {
+        const { admin_id } = data;
+    
+        try {
+            const query = 'SELECT COUNT(*) AS new_status_count FROM log WHERE status = "new" AND `admin_id` = ?';
+            const [response] = await db.execute(query, [admin_id]);
+            
+            socket.emit('checkNotificationResponse', response);
+        } catch (error) {
+            console.error('MySQL query error:', error);
+        }
+    });
     
     socket.on('changeMiddleName', async (data) => {
         const { recordId, newName } = data;
