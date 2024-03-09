@@ -259,7 +259,6 @@ io.on('connection', (socket) => {
             const query = 'SELECT r.*, u.fname AS userfname, u.mname AS usermname, u.lname AS userlname FROM records r JOIN user u ON r.uid = u.id WHERE u.admin_id = ? AND YEAR(r.dateassess) = ?';
             const [results] = await db.execute(query, [uid, year]);
     
-            console.log('Records retrieved successfully');
             socket.emit('getRecords', results);
         } catch (error) {
             console.error('MySQL query error:', error);
