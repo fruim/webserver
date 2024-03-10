@@ -33,7 +33,7 @@ const dbConfig = {
     password: 'Musician_1999!!',
     database: 'u629484482_healthi',
     waitForConnections: true,
-    connectionLimit: 50, // Adjust based on your application needs
+    connectionLimit: 0, // Adjust based on your application needs
     queueLimit: 0,
     connectTimeout: 10000, // 10 sec
 };
