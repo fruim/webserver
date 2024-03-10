@@ -307,7 +307,7 @@ io.on('connection', (socket) => {
     socket.on('clearNotification', async (data) => {
         const { admin_id } = data;
         try {
-            const query = 'DELETE FROM `records` WHERE `admin_id` = ?';
+            const query = 'DELETE FROM `log` WHERE `admin_id` = ?';
             await db.execute(query, [admin_id]);
     
             console.log('Notifications Cleared Successfully');
