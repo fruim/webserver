@@ -157,20 +157,37 @@ io.on('connection', (socket) => {
             socket.emit('getcoordinates', { error: 'Failed to retrieve coordinates' });
         }
     });
-    
-    
+
     socket.on('insertCoordinates', async (insertData) => {
-        const { uid, address, longitude, latitude } = insertData;
-      
+    const { uid, address, longitude, latitude } = insertData;
+  
         try {
-          const query = 'INSERT INTO `address_coordinates`(`uid`, `address`, `longitude`, `latitude`) VALUES (?, ?, ?, ?)';
-          const [results] = await db.execute(query, [uid, address, longitude, latitude]);
-          
-          console.log('Data Coordinates Inserted');
+            // Get a connection from the pool
+            db.getConnection(async (err, connection) => {
+                if (err) {
+                    console.error('Error getting connection from pool:', err);
+                    return;
+                }
+    
+                try {
+                    // Execute the query using the acquired connection
+                    const query = 'INSERT INTO `address_coordinates`(`uid`, `address`, `longitude`, `latitude`) VALUES (?, ?, ?, ?)';
+                    const [results] = await connection.execute(query, [uid, address, longitude, latitude]);
+                    
+                    console.log('Data Coordinates Inserted');
+                } catch (error) {
+                    console.error('MySQL query error:', error);
+                } finally {
+                    // Release the connection back to the pool after use
+                    connection.release();
+                }
+            });
         } catch (error) {
-          console.error('MySQL query error:', error);
+            console.error('Error:', error);
         }
-      });
+    });
+
+
 
     
     //Check Email Address
