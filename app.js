@@ -172,30 +172,6 @@ io.on('connection', (socket) => {
         }
       });
 
-    socket.on('insertCoordinates', async (insertData) => {
-        const { uid, address, longitude, latitude } = insertData;
-    
-        try {
-            const query = 'INSERT INTO `address_coordinates`(`uid`, `address`, `longitude`, `latitude`) VALUES (?, ?, ?, ?)';
-            await db.execute(query, [uid, address, longitude, latitude]);
-    
-            console.log('Data Coordinates Inserted');
-        } catch (error) {
-            console.error('MySQL query error:', error);
-        }
-    });
-    
-
-    socket.on('retrieveUsers', async (uid) => {
-        try {
-            const query = 'SELECT * FROM `user` WHERE admin_id = ?';
-            const [results] = await db.execute(query, [uid]);
-            socket.emit('getUsers', results);
-        } catch (error) {
-            console.error('MySQL query error:', error);
-            socket.emit('getUsers', { error: 'Failed to retrieve users' });
-        }
-    });
     
     //Check Email Address
     socket.on('retrieveUsers', async (uid) => {
