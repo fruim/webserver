@@ -159,32 +159,26 @@ io.on('connection', (socket) => {
     });
 
     socket.on('insertCoordinates', async (insertData) => {
-    const { uid, address, longitude, latitude } = insertData;
-  
-        try {
-            // Get a connection from the pool
-            db.getConnection(async (err, connection) => {
-                if (err) {
-                    console.error('Error getting connection from pool:', err);
-                    return;
-                }
-    
-                try {
-                    // Execute the query using the acquired connection
-                    const query = 'INSERT INTO `address_coordinates`(`uid`, `address`, `longitude`, `latitude`) VALUES (?, ?, ?, ?)';
-                    const [results] = await connection.execute(query, [uid, address, longitude, latitude]);
-                    
-                    console.log('Data Coordinates Inserted');
-                } catch (error) {
-                    console.error('MySQL query error:', error);
-                } finally {
-                    // Release the connection back to the pool after use
-                    connection.release();
-                }
-            });
-        } catch (error) {
-            console.error('Error:', error);
+      const { uid, address, longitude, latitude } = insertData;
+      
+      let connection;
+      try {
+        // Acquire a connection from the pool
+        connection = await db.getConnection();
+        
+        // Execute the query using the acquired connection
+        const query = 'INSERT INTO `address_coordinates`(`uid`, `address`, `longitude`, `latitude`) VALUES (?, ?, ?, ?)';
+        const [results] = await connection.execute(query, [uid, address, longitude, latitude]);
+        
+        console.log('Data Coordinates Inserted');
+      } catch (error) {
+        console.error('MySQL query error:', error);
+      } finally {
+        // Release the connection back to the pool, regardless of whether there was an error
+        if (connection) {
+          connection.release();
         }
+      }
     });
 
 
